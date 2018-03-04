@@ -1,0 +1,14 @@
+.card{
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+.card-img-top{
+    margin-top: 5px;
+}
+
+.btn-primary {
+	background-color: #ee5502;
+	border-color: #ee5502; 
+}

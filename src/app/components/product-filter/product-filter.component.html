@@ -1,0 +1,27 @@
+<div class="card">
+  <h4 class="card-header main-color-bg main-color-bg"><i class="fa fa-filter fa-fw"></i>Filter</h4>
+	<div class="card-body">	
+		<div class="form-group">
+	    	<form (submit)="onSubmit()">
+			<label>Gender</label>
+			<div class="d-flex justify-content-between">
+				<div class="form-group">
+					<label>Male</label>
+			        <input type="checkbox" [checked]="filters.gender.male" (change)="filters.gender.male = !filters.gender.male" name="male" ng-model="formData.filters.gender.male">
+			    </div>
+			    <div class="form-group">    
+			        <label>Female</label>
+			        <input type="checkbox" [checked]="filters.gender.female" (change)="filters.gender.female = !filters.gender.female" name="female" ng-model="formData.filters.gender.female">
+			    </div>
+			    <div class="form-group">    
+			        <label>Unisex</label>
+			        <input type="checkbox" [checked]="filters.gender.unisex" (change)="filters.gender.unisex = !filters.gender.unisex" name="unisex" ng-model="formData.filters.genders.unisex">
+			    </div>	
+			</div>  
+			<div class="card-footer main-color-bg">
+	  			<input type="submit" class="btn btn-light btn-block" value="Apply">
+			</div>    
+		    </form>
+		</div>
+   	</div>
+</div>
