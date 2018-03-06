@@ -17,8 +17,6 @@ export class ProductFilterComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log("onSubmit");
-    console.log(this.filters);
     this.esService.applyFilters(this.filters);
   }
 

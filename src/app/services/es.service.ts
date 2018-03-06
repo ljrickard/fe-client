@@ -4,15 +4,18 @@ import 'rxjs/add/operator/map';
 import { Filter, Gender, SkinType } from '../models/Filters';
 import { Client } from 'elasticsearch';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as Bodybuilder from 'bodybuilder';
 import { NgZone } from '@angular/core';
+import 'rxjs/add/operator/do';
 
 @Injectable()
 export class EsService {
   products: Observable<any>;
   client: Client
   body: Bodybuilder
-  // zone:NgZone
+  data$: BehaviorSubject<any> = new BehaviorSubject({});
+  observe: Observable<any>;
 
   filters:Filter = {
     gender:{
@@ -42,17 +45,18 @@ export class EsService {
                   .query('match_all')
                   .build()
 
-    console.log(this.body);
-  }
+    
+    this.observe = new Observable(observer => {
 
-  getProducts(){
-    this.products = new Observable(observer => {
+      console.log('getProducts');
+      console.log(this.body);
+
       this.client.search({
           index: 'products',
           type: 'product',
           body: this.body
         }).then(function (resp) {
-            console.log('getProducts');
+            console.log('resp');
             console.log(resp);
             observer.next(resp);
         }, function (err) {
@@ -60,8 +64,52 @@ export class EsService {
         });
     })
 
+  }
+
+  updateData(){
+    console.log('updateData');
+
+    let data = new Observable(observer => {
+      this.client.search({
+          index: 'products',
+          type: 'product',
+          body: this.body
+        }).then(function (resp) {
+            console.log('updateData');
+            console.log(resp);
+            return resp;
+        }, function (err) {
+            console.error(err.message);
+        });
+    }).do((data)=>{
+        this.data$.next(data);
+    })
+  }
+
+  getProducts(){
+    this.products = new Observable(observer => {
+
+      console.log('getProducts');
+      console.log(this.body);
+
+      this.client.search({
+          index: 'products',
+          type: 'product',
+          body: this.body
+        }).then(function (resp) {
+            console.log('resp');
+            console.log(resp);
+            observer.next(resp);
+        }, function (err) {
+            console.error(err.message);
+        });
+    })
+
+    console.log('return this.products;');
+
     return this.products;
   }
+
 
   getProduct(brand:string, productName:string){
     //  http://127.0.0.1:9200/products/_search?q=brand:kiehls+name:"Blue Herbal Moisturizer"
@@ -83,56 +131,11 @@ export class EsService {
   applyFilters(filters:Filter) {
     console.log('applyFilters');
 
-    this.filters = filters;
     this.body = Bodybuilder().filter('query_string', 'gender', 'male').build();
     console.log(this.body);
 
- 
-    //console.log(temp);
-
-
-    // let temp2 = {
-    //   query: {
-    //     constant_score: {
-    //       filter: {
-    //         term: {
-    //           gender: "male"
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    // this.client.search({
-    //       index: 'products',
-    //       type: 'product',
-    //       body: temp
-    //     }).then(function (resp) {
-    //         console.log(resp);
-    //     }, function (err) {
-    //         console.error(err.message);
-    //     });
 
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
