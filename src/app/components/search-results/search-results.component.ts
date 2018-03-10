@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { EsService } from '../../services/es.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-search-results',
@@ -7,17 +8,13 @@ import { EsService } from '../../services/es.service';
   styleUrls: ['./search-results.component.css']
 })
 export class SearchResultsComponent implements OnInit {
-  products:any[];
+  products: any[];
 
-  constructor(public esService:EsService) { }
+  constructor(public esService:EsService) {}
 
   ngOnInit() {
-
-    this.esService.getProducts().subscribe(products => {
-      console.log('ngOnInit');
-      this.products = products['hits']['hits'];
-      console.log(this.products);
-    });
+    this.esService.products$.subscribe(
+      products => { this.products = products; });
   }
 
 }

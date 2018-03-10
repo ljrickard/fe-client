@@ -20,6 +20,7 @@ import { LogoutComponent } from './components/logout/logout.component';
 import { FormatUrlPipe } from './pipes/format-urls.pipe';
 
 import { EsService } from './services/es.service';
+import { ProductSummaryComponent } from './components/product-summary/product-summary.component';
 
 const appRoutes: Routes = [
   {path:'', component:MainComponent},
@@ -45,7 +46,8 @@ const appRoutes: Routes = [
     MainComponent,
     UserProfileComponent,
     LogoutComponent,
-    FormatUrlPipe
+    FormatUrlPipe,
+    ProductSummaryComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,9 @@
+<div class="card col-lg-6">
+	<img class="card-img-top img-thumbnail" [src]="product._source.s3_images[0]" alt="Card image cap">
+  	<div class="card-body">
+    	<h5 class="card-title">{{ product._source.name }}</h5>
+    	<p class="card-text">{{ product._source.tagline }}</p>
+    	<p class="card-text">{{ product._source.gender }}</p>
+    	<a [routerLink]="[ '/'+product._source.brand+'/'+product._source.name | formatUrl ]" class="btn btn-primary">Details</a>
+ 	</div>
+</div>

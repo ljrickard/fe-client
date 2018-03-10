@@ -9,8 +9,9 @@ import { EsService } from '../../services/es.service';
 })
 export class ProductFilterComponent implements OnInit {
   filters:Filter;
+  products:any[];
 
-  constructor(public esService:EsService) { }
+  constructor(public esService:EsService) {}
 
   ngOnInit() {
     this.filters = this.esService.getFilters();
