@@ -13,16 +13,6 @@ export class SearchResultsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.products = [];
-
-    // this.esService.updateData();
-
-    // this.esService.data$.subscribe(data => { // subscribe once to the data stream
-    //   console.log('subscribe');
-    //   console.log(data);
-    //   this.products = data;
-    // })
-
     this.esService.getProducts().subscribe(products => {
       console.log('ngOnInit');
       this.products = products['hits']['hits'];

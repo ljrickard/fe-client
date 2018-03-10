@@ -16,6 +16,7 @@ export class EsService {
   body: Bodybuilder
   data$: BehaviorSubject<any> = new BehaviorSubject({});
   observe: Observable<any>;
+  results: any;
 
   filters:Filter = {
     gender:{
@@ -45,53 +46,26 @@ export class EsService {
                   .query('match_all')
                   .build()
 
-    
-    this.observe = new Observable(observer => {
+    console.log("constructor");
+    console.log(this.body);
 
-      console.log('getProducts');
-      console.log(this.body);
-
-      this.client.search({
+    this.client.search({
           index: 'products',
           type: 'product',
           body: this.body
-        }).then(function (resp) {
-            console.log('resp');
-            console.log(resp);
-            observer.next(resp);
-        }, function (err) {
-            console.error(err.message);
+        }, (err, res) => {
+
+          this.results = res;
+
         });
-    })
 
-  }
+    console.log(this.results);
 
-  updateData(){
-    console.log('updateData');
-
-    let data = new Observable(observer => {
-      this.client.search({
-          index: 'products',
-          type: 'product',
-          body: this.body
-        }).then(function (resp) {
-            console.log('updateData');
-            console.log(resp);
-            return resp;
-        }, function (err) {
-            console.error(err.message);
-        });
-    }).do((data)=>{
-        this.data$.next(data);
-    })
   }
 
   getProducts(){
     this.products = new Observable(observer => {
 
-      console.log('getProducts');
-      console.log(this.body);
-
       this.client.search({
           index: 'products',
           type: 'product',
@@ -104,11 +78,9 @@ export class EsService {
             console.error(err.message);
         });
     })
-
-    console.log('return this.products;');
-
     return this.products;
   }
+
 
 
   getProduct(brand:string, productName:string){
@@ -131,11 +103,30 @@ export class EsService {
   applyFilters(filters:Filter) {
     console.log('applyFilters');
 
-    this.body = Bodybuilder().filter('query_string', 'gender', 'male').build();
+    //this.body = Bodybuilder().query('match_all').filter('term', 'gender', 'male').build();
+
+    //curl -H 'Content-Type: application/json' 'localhost:9200/products/product/_search' -d '{"query": {"bool": {"must": {"match_all": {}},"filter": {"term": {"gender": "male"}}}}}'
+
+    this.body = {query: {bool: {must: {match_all: {}}, filter: {term: {gender: 'male'}}}}}
+
     console.log(this.body);
 
+    this.client.search({
+          index: 'products',
+          type: 'product',
+          body: this.body
+        }, (err, res) => {
 
+          if (err){
+            console.log(err);
+          }
+
+          this.results = res;
+
+        });
+    console.log(this.results);
   }
+
 
 
 
