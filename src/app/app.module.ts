@@ -21,6 +21,7 @@ import { FormatUrlPipe } from './pipes/format-urls.pipe';
 
 import { EsService } from './services/es.service';
 import { ProductSummaryComponent } from './components/product-summary/product-summary.component';
+import { ProductAbbreviatedComponent } from './components/product-abbreviated/product-abbreviated.component';
 
 const appRoutes: Routes = [
   {path:'', component:MainComponent},
@@ -47,7 +48,8 @@ const appRoutes: Routes = [
     UserProfileComponent,
     LogoutComponent,
     FormatUrlPipe,
-    ProductSummaryComponent
+    ProductSummaryComponent,
+    ProductAbbreviatedComponent
   ],
   imports: [
     BrowserModule,

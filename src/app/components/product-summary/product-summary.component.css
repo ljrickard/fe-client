@@ -1,0 +1,18 @@
+img {
+	width: 100px;
+	height: 100px;
+}
+
+.media {
+	padding: 10px;
+	margin-bottom: 10px;
+	border-style: solid;
+	border-radius: 8px;
+	border-color: #ee5502;
+	border-width: 1px;
+}
+
+.btn {
+	background-color: #ee5502;
+	border-color: #ee5502;
+}

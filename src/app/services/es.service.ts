@@ -12,21 +12,12 @@ import 'rxjs/add/operator/map';
 export class EsService {
   client: Client
   body: Bodybuilder
-  observe: Observable<any>;
   products = new Subject<any[]>();
   products$ = this.products.asObservable();
-
-  filters:Filter = {
-    gender:{
-      male:false,
-      female:false,
-      unisex:false
-    },
-    skinType: {
-      dry:false,
-      wet:false
-    }
-  }
+  filters = new Filter();
+  match_all = { query: { match_all: {} } }
+  searchOptions=['All', 'Ingreidents'];
+  selectedsearchOption = this.searchOptions[0];
 
   constructor(public http:Http) { 
     this.client = new Client({
@@ -40,6 +31,7 @@ export class EsService {
       }
     });
 
+    this.body = this.match_all;
     this.publishProducts();
   }
 
@@ -48,9 +40,46 @@ export class EsService {
           index: 'products',
           type: 'product',
           body: this.body
-        }).then((res) => {
-          this.products.next(res.hits.hits);
+        }).then((response) => {
+          console.log(response);
+          this.products.next(response.hits.hits);
         });
+  }
+
+  searchResults = new Subject<any[]>();
+  searchResults$ = this.searchResults.asObservable();
+
+  getSearchOptions(){
+    return this.searchOptions;
+  }
+
+  searchOption(selectedsearchOption:string) {
+    this.selectedsearchOption = selectedsearchOption;
+    console.log(this.selectedsearchOption);
+  }
+
+  searchInput(searchValue:string) {
+
+    let searchQuery = { query: { match: { _all: searchValue} } }
+
+    this.client.search({
+          index: 'products',
+          type: 'product',
+          body: searchQuery
+        }).then((response) => {
+          console.log(response);
+          this.searchResults.next(response.hits.hits);
+        });
+  }
+
+  search(searchValue:string) {
+    if(searchValue === ""){
+      this.clearFilters(); //TODO: update to retain filters but clear search
+    }
+    else{
+      this.body = { query: { match: { _all: searchValue} } }
+      this.publishProducts();
+    }
   }
 
   getProduct(brand:string, productName:string){
@@ -65,14 +94,31 @@ export class EsService {
     return input.replace(re, " ");
   }
 
+  clearFilters() {
+    this.body = this.match_all;
+    this.publishProducts();
+  }
+
   getFilters() {
     return this.filters;
   }
 
   applyFilters(filters:Filter) {
-    //curl -H 'Content-Type: application/json' 'localhost:9200/products/product/_search' -d '{"query": {"bool": {"must": {"match_all": {}},"filter": {"term": {"gender": "male"}}}}}'
-    this.body = {query: {bool: {must: {match_all: {}}, filter: {term: {gender: 'male'}}}}};
-    this.publishProducts();
+    if(filters.noFiltersSelected()){
+      this.clearFilters();
+    }
+    else{
+      this.body = {query: {bool: {must: {match_all: {}}, filter: {terms: {gender: filters.getFilters()}}}}};
+      this.publishProducts();
+    }
+
   }
 
 }
+
+
+
+
+
+
+
