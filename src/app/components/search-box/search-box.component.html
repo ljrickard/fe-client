@@ -10,7 +10,7 @@
 		<div *ngIf="searchResponse && showAbbreviatedResults" class="dropdown col-md-8 offset-md-2">
 		  <div class="dropdown-content">
 		  	<div *ngFor="let product of searchResponse">
-		  		<a  [routerLink]="[ '/'+product._id ]" class="link">
+		  		<a [routerLink]="[ '/'+product._id ]" class="link">
 					<div>
 						<img class="card-img-top img-thumbnail" [src]="product._source.s3_images[0]">
 						<p>{{ product._source.name }}</p>

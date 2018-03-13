@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HttpModule } from '@angular/http';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { AppComponent } from './app.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
@@ -56,7 +57,8 @@ const appRoutes: Routes = [
     FormsModule,
     RouterModule.forRoot(appRoutes),
     AngularFontAwesomeModule,
-    HttpModule
+    HttpModule, 
+    InfiniteScrollModule
   ],
   providers: [
     EsService

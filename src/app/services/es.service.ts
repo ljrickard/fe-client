@@ -18,6 +18,7 @@ export class EsService {
   match_all = { query: { match_all: {} } }
   searchOptions=['All', 'Ingreidents'];
   selectedsearchOption = this.searchOptions[0];
+  scrollId:any;
 
   constructor(public http:Http) { 
     this.client = new Client({
@@ -35,13 +36,25 @@ export class EsService {
     this.publishProducts();
   }
 
+  scrolled() { 
+    this.client.scroll({
+      scrollId: this.scrollId,
+      scroll: '30s'
+    }).then((response) => {
+          console.log(response);
+          this.products.next(response.hits.hits);
+        });
+  }
+
   publishProducts() {
     this.client.search({
           index: 'products',
+          scroll: '120s',
           type: 'product',
           body: this.body
         }).then((response) => {
           console.log(response);
+          this.scrollId = response._scroll_id;
           this.products.next(response.hits.hits);
         });
   }

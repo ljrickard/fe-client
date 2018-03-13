@@ -1,5 +1,5 @@
-<div *ngIf="products;else other_content">
-	<ul class="list-unstyled">
+<div *ngIf="products && products.length > 0;else other_content">
+	<ul class="list-unstyled search-results"  infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
 		<app-product-summary *ngFor="let product of products" [product]="product"></app-product-summary>
 	</ul>
 </div>
