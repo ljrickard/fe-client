@@ -23,13 +23,13 @@ export class SearchBoxComponent implements OnInit {
     this.selectedsearchOption = this.searchOptions[0];
   }
 
-  searchOptionChanged(selectedsearchOption:string) {
-    this.esService.searchOption(selectedsearchOption);
+  searchOptionChanged(selectedSearchOption:string) {
+    this.esService.searchOption(selectedSearchOption);
   }
 
   onSearchChange() {
     this.showAbbreviatedResults = true;
-    this.esService.searchInput(this.searchText);
+    this.esService.searchForSuggestions(this.searchText);
   }
 
   Search(){

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Filter, Gender, SkinType } from '../../models/Filters';
+import { Filter } from '../../models/Filter';
 import { EsService } from '../../services/es.service';
 
 @Component({
@@ -8,13 +8,15 @@ import { EsService } from '../../services/es.service';
   styleUrls: ['./product-filter.component.css']
 })
 export class ProductFilterComponent implements OnInit {
-  filters:Filter;
+  filters:Filter = new Filter();
   products:any[];
 
-  constructor(public esService:EsService) {}
+  constructor(public esService:EsService) { }
 
   ngOnInit() {
-    this.filters = this.esService.getFilters();
+    this.esService.filters$.subscribe(
+      filters => {this.filters = filters; console.log("ProductFilterComponent: " + filters);}
+    );
   }
 
   onSubmit(){

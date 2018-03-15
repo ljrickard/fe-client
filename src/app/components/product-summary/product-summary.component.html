@@ -1,8 +1,8 @@
 <li class="media">
-	<img class="align-self-start mr-3" [src]="product._source.s3_images[0]">
+	<img class="align-self-start mr-3" [src]="product.primaryImage">
 	<div class="media-body">
-		<h5 class="mt-0 mb-1">{{ product._source.name }}</h5>
-		<p>{{ product._source.tagline }}</p>
-		<a [routerLink]="[ '/'+product._id ]" class="btn btn-primary float-right">Details</a>
+		<h5 class="mt-0 mb-1">{{ product.name }}</h5>
+		<p>{{ product.tagline }}</p>
+		<a [routerLink]="[ '/'+product.id ]" class="btn btn-primary float-right">Details</a>
 	</div>
 </li>

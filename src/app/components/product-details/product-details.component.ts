@@ -18,7 +18,7 @@ export class ProductDetailsComponent implements OnInit {
 
 
     this.route.params.subscribe((params:Params) => { this.brand = params.brand; this.productName = params.productName; });
-    let result = this.esService.getProduct(this.brand, this.productName).subscribe(product => { this.product = product; console.log(this.product)});
+    // let result = this.esService.getProduct(this.brand, this.productName).subscribe(product => { this.product = product; console.log(this.product)});
   }
 
 }

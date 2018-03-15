@@ -1,6 +1,9 @@
-<div *ngIf="products && products.length > 0;else other_content">
+<div *ngIf="filters && filters.length > 0">
+	<h5>Current Filters: {{ filters }}</h5>
+</div>
+<div *ngIf="products && products.length > 0;">
 	<ul class="list-unstyled search-results"  infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
 		<app-product-summary *ngFor="let product of products" [product]="product"></app-product-summary>
 	</ul>
 </div>
-<ng-template #other_content>no products loaded...</ng-template>
+<ng4-loading-spinner> </ng4-loading-spinner>

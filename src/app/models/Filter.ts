@@ -15,14 +15,22 @@ export class Filter {
   }
 
   noFiltersSelected(){
-    let allFilters = this.getFilters();
+    let allFilters = this.selectedFilters();
     if (allFilters.length <= 0) {
         return true;
     }
     return false;
   }
 
-  getFilters(){
+  filtersSelected(){
+    let allFilters = this.selectedFilters();
+    if (allFilters.length <= 0) {
+        return false;
+    }
+    return true;
+  }
+
+  selectedFilters(){
     return this.getGenders()
    }
 
@@ -37,12 +45,12 @@ export class Filter {
    }
 }
 
-export interface SkinType {
+interface SkinType {
   dry:boolean;
   wet:boolean;
 }
 
-export interface Gender {
+interface Gender {
   male:boolean;
   female:boolean;
   unisex:boolean;
