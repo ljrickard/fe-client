@@ -3,6 +3,8 @@
 	<div class="media-body">
 		<h5 class="mt-0 mb-1">{{ product.name }}</h5>
 		<p>{{ product.tagline }}</p>
-		<a [routerLink]="[ '/'+product.id ]" class="btn btn-primary float-right">Details</a>
+		<p>Gender: {{ product.gender }}</p>
+		<p>Score: {{ product.score }}</p>
+		<a [routerLink]="[ '/skincare/'+product.id ]" class="btn btn-primary float-right">Details</a>
 	</div>
 </li>

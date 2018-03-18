@@ -10,13 +10,13 @@ export class Product {
   description:string;
   tags:string[]
   images:string[];
-
+  score:number;
 
   constructor(id:string, name:string, 
                 primaryImage:string, tagline:string,
                 gender:string[], ingredients:string[],
                 description:string, tags:string[],
-                images:string[]){
+                images:string[], score:number){
 
     this.id = id;
     this.name = name;
@@ -27,6 +27,7 @@ export class Product {
     this.description = description;
     this.tags = tags;
     this.images = images;
+    this.score = score;
   }
 
 }

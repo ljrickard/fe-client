@@ -1,19 +1,22 @@
 <header id="header">
   	<div class="container">
 		<div class="input-group input-group-lg col-md-8 offset-md-2">
-		    <input type="text" class="search-query form-control" (input)="onSearchChange()" [(ngModel)]="searchText" (keyup.enter)="Search()" placeholder="Search" />
+		    <input type="text" class="search-query form-control" (input)="onSearchChange()" [(ngModel)]="searchText" (keyup.enter)="search()" placeholder="Find by name, brand, ingredients and more" />
+			<div *ngIf="showClearSearchText && searchText">
+		    	<span id="searchclear" class="fa fa-times-circle" (click)="clearSearchText()"></span>
+		    </div>
 			  <select class="input-small btn-outline-info select" [(ngModel)]="selectedsearchOption" (ngModelChange)="searchOptionChanged($event)" name="selectedsearchOption">
                  <option *ngFor="let option of searchOptions" [ngValue]="option">{{ option }}</option>
               </select>
-		    <button class="btn-lg btn-outline-info" type="button" (click)="Search()"><span class="fa fa-search"></span></button>
+		    <button class="btn-lg btn-outline-info" type="button" (click)="search()"><span class="fa fa-search"></span></button>
 		</div>
 		<div *ngIf="searchResponse && showAbbreviatedResults" class="dropdown col-md-8 offset-md-2">
 		  <div class="dropdown-content">
 		  	<div *ngFor="let product of searchResponse">
-		  		<a [routerLink]="[ '/'+product._id ]" class="link">
+		  		<a [routerLink]="[ '/skincare/'+product.id ]" class="link">
 					<div>
-						<img class="card-img-top img-thumbnail" [src]="product._source.s3_images[0]">
-						<p>{{ product._source.name }}</p>
+						<img class="card-img-top img-thumbnail" [src]="product.primaryImage">
+						<p>{{ product.name }}</p>
 					</div>
 		  		</a>
 		  	</div>

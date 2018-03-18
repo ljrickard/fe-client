@@ -3,7 +3,7 @@
 	<div class="card-body">	
 		<div class="form-group">
 	    	<form (submit)="onSubmit()">
-			<label>Gender</label>
+			<label><b>Gender</b></label>
 			<div class="d-flex justify-content-between">
 				<div class="form-group">
 					<label>Male</label>
@@ -18,6 +18,27 @@
 			        <input type="checkbox" [checked]="filters.genders.unisex" (change)="filters.genders.unisex = !filters.genders.unisex" name="unisex" ng-model="formData.filters.genders.unisex">
 			    </div>	
 			</div>  
+			<label><b>Skin Type</b></label>
+			<div class="d-flex justify-content-between">
+				<div class="form-group">
+					<label>Normal</label>
+			        <input type="checkbox" [checked]="filters.skinType.normal" (change)="filters.skinType.normal = !filters.skinType.normal" name="normal" ng-model="formData.filters.skinType.normal">
+			    </div>
+			    <div class="form-group">    
+			        <label>Oily</label>
+			        <input type="checkbox" [checked]="filters.skinType.oily" (change)="filters.skinType.oily = !filters.skinType.oily" name="oily" ng-model="formData.filters.skinType.oily">
+			    </div>
+				<div class="form-group">    
+			        <label>Dry</label>
+			        <input type="checkbox" [checked]="filters.skinType.dry" (change)="filters.skinType.dry = !filters.skinType.dry" name="unisex" ng-model="formData.filters.skinType.dry">
+			    </div>	
+			</div>  
+			<div class="d-flex justify-content-between">
+			   	<div class="form-group">    
+			        <label>Senstive</label>
+			        <input type="checkbox" [checked]="filters.skinType.sensitive" (change)="filters.skinType.sensitive = !filters.skinType.sensitive" name="unisex" ng-model="formData.filters.skinType.sensitive">
+			    </div>	
+			</div>
 			<div class="card-footer main-color-bg">
 	  			<input type="submit" class="btn btn-light btn-block" value="Apply">
 			</div>    

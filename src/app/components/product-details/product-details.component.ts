@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { EsService } from '../../services/es.service';
+import { Product } from '../../models/Product';
 
 @Component({
   selector: 'app-product-details',
@@ -8,17 +9,18 @@ import { EsService } from '../../services/es.service';
   styleUrls: ['./product-details.component.css']
 })
 export class ProductDetailsComponent implements OnInit {
-  brand:string;
-  productName:string;
-  product:any;
+  objectKeys = Object.keys;
+  id:string
+  productDetails:Product;
 
-  constructor(private route:ActivatedRoute, private router:Router, public esService:EsService) {}
-  // {brand: "kiehls", productName: "Rosa-Arctica-Eye"}
+  constructor(private route:ActivatedRoute, private router:Router, private esService:EsService) {}
   ngOnInit() {
 
+    this.esService.productDetails$.subscribe(
+      productDetails => { this.productDetails = productDetails;});
 
-    this.route.params.subscribe((params:Params) => { this.brand = params.brand; this.productName = params.productName; });
-    // let result = this.esService.getProduct(this.brand, this.productName).subscribe(product => { this.product = product; console.log(this.product)});
+    this.route.params.subscribe((params:Params) => { this.id = params.id; });
+    this.esService.getProduct(this.id);
   }
 
 }

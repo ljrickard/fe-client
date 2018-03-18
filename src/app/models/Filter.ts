@@ -9,8 +9,10 @@ export class Filter {
       unisex:false
     }
     this.skinType={
+      normal:false,
+      oily:false,
       dry:false,
-      wet:false
+      sensitive:false
     }
   }
 
@@ -46,8 +48,18 @@ export class Filter {
 }
 
 interface SkinType {
+  normal:boolean;
+  oily:boolean;
   dry:boolean;
-  wet:boolean;
+  sensitive:boolean;
+}
+
+interface BodyParts {
+  face:boolean;
+  hands:boolean;
+  arms:boolean;
+  legs:boolean;
+  back:boolean;
 }
 
 interface Gender {

@@ -1,9 +1,20 @@
 <div *ngIf="filters && filters.length > 0">
 	<h5>Current Filters: {{ filters }}</h5>
 </div>
+<div *ngIf="searchQuery && searchQuery.length > 0">
+	<h5>Search Results For: {{ searchQuery }}</h5>
+</div>
 <div *ngIf="products && products.length > 0;">
 	<ul class="list-unstyled search-results"  infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
 		<app-product-summary *ngFor="let product of products" [product]="product"></app-product-summary>
 	</ul>
 </div>
 <ng4-loading-spinner> </ng4-loading-spinner>
+<div *ngIf="productsInvertedFilters && productsInvertedFilters.length > 0;">
+	<div>
+		<h5>Hidden by the your current filters</h5>
+	</div>
+	<ul class="list-unstyled search-results"  infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScrollInverted()">
+		<app-product-summary *ngFor="let product of productsInvertedFilters" [product]="product"></app-product-summary>
+	</ul>
+</div>	

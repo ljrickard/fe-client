@@ -73,3 +73,15 @@ img {
   margin-right: 5px;
 }
 
+#searchclear {
+    position: absolute;
+    right: 200px;
+    top: 0;
+    bottom: 0;
+    height: 26px;
+    margin: auto;
+    font-size: 25px;
+    cursor: pointer;
+    color: #ee5502;
+}
+

@@ -15,7 +15,7 @@ export class ProductFilterComponent implements OnInit {
 
   ngOnInit() {
     this.esService.filters$.subscribe(
-      filters => {this.filters = filters; console.log("ProductFilterComponent: " + filters);}
+      filters => {this.filters = filters;}
     );
   }
 

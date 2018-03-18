@@ -30,7 +30,7 @@ const appRoutes: Routes = [
   {path:'login', component:LoginComponent},
   {path:'logout', component:LogoutComponent},
   {path:'profile', component:UserProfileComponent},
-  {path:':brand/:productName', component:ProductDetailsComponent},
+  {path:':skincare/:id', component:ProductDetailsComponent},
   {path:'**', component:PageNotFoundComponent}
 ];
 
