@@ -11,12 +11,14 @@ export class Product {
   tags:string[]
   images:string[];
   score:number;
+  skinType:string;
 
   constructor(id:string, name:string, 
                 primaryImage:string, tagline:string,
                 gender:string[], ingredients:string[],
                 description:string, tags:string[],
-                images:string[], score:number){
+                images:string[], score:number, 
+                skinType:string){
 
     this.id = id;
     this.name = name;
@@ -28,6 +30,7 @@ export class Product {
     this.tags = tags;
     this.images = images;
     this.score = score;
+    this.skinType = skinType;
   }
 
 }

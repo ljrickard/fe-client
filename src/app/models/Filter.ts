@@ -1,9 +1,9 @@
 export class Filter {
-  genders:Gender;
+  gender:Gender;
   skinType:SkinType;
 
   constructor(){
-    this.genders={
+    this.gender={
       male:false,
       female:false,
       unisex:false
@@ -16,34 +16,36 @@ export class Filter {
     }
   }
 
+  filters(){
+    return {gender: this.gender, skin_type: this.skinType}
+  }
+
   noFiltersSelected(){
-    let allFilters = this.selectedFilters();
-    if (allFilters.length <= 0) {
-        return true;
-    }
-    return false;
+    console.log(Object.keys(this.selectedFilters()).length === 0);
+    return Object.keys(this.selectedFilters()).length === 0;
   }
 
   filtersSelected(){
-    let allFilters = this.selectedFilters();
-    if (allFilters.length <= 0) {
-        return false;
-    }
-    return true;
+    console.log(Object.keys(this.selectedFilters()).length != 0);
+    return Object.keys(this.selectedFilters()).length != 0;
   }
 
   selectedFilters(){
-    return this.getGenders()
-   }
-
-  getGenders(){
-    let enumerableKeys = [];
-    for (let gender of Object.keys(this.genders)) {
-      if(this.genders[gender]===true){
-        enumerableKeys.push(gender);
+    let selectedFilters = {};
+    let filters = this.filters(); 
+    for (let filter of Object.keys(filters)){
+        let selectedItems = [];
+        let currentItems = []
+        for (let item of Object.keys(filters[filter])) {
+          if(filters[filter][item]===true){
+            if (!selectedFilters.hasOwnProperty(filter)){
+              selectedFilters[filter]=[];
+            }
+            selectedFilters[filter].push(item);
+          }
       }
     }
-    return enumerableKeys;
+    return selectedFilters;
    }
 }
 
@@ -52,14 +54,6 @@ interface SkinType {
   oily:boolean;
   dry:boolean;
   sensitive:boolean;
-}
-
-interface BodyParts {
-  face:boolean;
-  hands:boolean;
-  arms:boolean;
-  legs:boolean;
-  back:boolean;
 }
 
 interface Gender {
