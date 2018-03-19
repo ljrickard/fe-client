@@ -39,7 +39,7 @@ export class EsService {
   currentSearchQuery:string = '';
   currentProducts:Product[]=[];
   currentProductsInvertedFilters:Product[]=[];
-  invertedFiltersBody:string;
+  invertedFiltersBody:any;
   currentProductsLength:number = 0;
 
   constructor(private http:Http) { 
@@ -57,6 +57,17 @@ export class EsService {
     // this.generateBody();
     // this.publishProducts();
     // this.filters.next(new Filter());
+
+    // let temp = {query: {multi_match: {fields: [ "ingredients", "name", "brand", "description"], 'query': 'phrase_prefix'}}};
+    // console.log(temp);
+
+    // let test = Bodybuilder()
+    //                 .query('multi_match', {fields:  [ "ingredients", "name", "brand", "description"]}, 'phrase_prefix')
+    //                 .build();
+
+    // console.log('test');
+    // console.log(typeof(test));
+    // console.log(test);
   }
 
   scrolled() { 
@@ -79,7 +90,7 @@ export class EsService {
 
   
   publishProducts() {
-    console.log('publishProducts');
+    // console.log('publishProducts');
     this.generateBody();
 
     this.client.search({
@@ -88,10 +99,10 @@ export class EsService {
           type: this.type,
           body: this.body
         }).then((response) => {
-          console.log(response);
+          // console.log(response);
           this.scrollId = response._scroll_id;
           this.mapAllToProduct(response).map(product => this.currentProducts.push(product));
-          console.log(this.currentProducts.length);
+          // console.log(this.currentProducts.length);
           this.products.next(this.currentProducts);
           if(this.selectedFilters.filtersSelected()){
             this.publishInvertedFilters();
@@ -102,17 +113,18 @@ export class EsService {
   }
 
   publishInvertedFilters() {
-  console.log('publishInvertedFilters');
+  // console.log('publishInvertedFilters');
+  this.currentProductsInvertedFilters = []
     this.client.search({
           index: this.index,
           scroll: this.scrollTimeout,
           type: this.type,
           body: this.invertedFiltersBody
         }).then((response) => {
-          console.log(response);
+          // console.log(response);
           this.scrollIdInverted = response._scroll_id;
           this.mapAllToProduct(response).map(product => this.currentProductsInvertedFilters.push(product));
-          console.log(this.currentProductsInvertedFilters.length)
+          // console.log(this.currentProductsInvertedFilters.length)
           this.invertedFiltersResults.next(this.currentProductsInvertedFilters);
     }, error => {
             console.log(error);
@@ -120,14 +132,14 @@ export class EsService {
   }
 
   scrolledInverted() { 
-    console.log('scrolledInverted');
+    // console.log('scrolledInverted');
     this.client.scroll({
       scrollId: this.scrollIdInverted,
       scroll: this.scrollTimeout,
     }).then((response) => {
-          console.log(response);
+          // console.log(response);
           this.mapAllToProduct(response).map(product => this.currentProductsInvertedFilters.push(product));
-          console.log(this.currentProductsInvertedFilters.length)
+          // console.log(this.currentProductsInvertedFilters.length)
           this.invertedFiltersResults.next(this.currentProductsInvertedFilters);
         }, error => {
             console.log(error);
@@ -162,49 +174,54 @@ export class EsService {
     this.invertedFiltersBody = ''
 
     if(this.currentSearchQuery === "" && this.selectedFilters.noFiltersSelected()) {
-      console.log('generateBody 1');
+      // console.log('generateBody 1');
       this.body = Bodybuilder()
                     .query('match_all', {})
                     .build();
-      console.log(this.body);
+      // console.log(this.body);
     }
     else if(this.currentSearchQuery !== "" && this.selectedFilters.noFiltersSelected()) {
-      console.log('generateBody 2');
+      // console.log('generateBody 2');
       // this.body = Bodybuilder()
       //               .query('match', this.searchOptions[this.selectedsearchOption], this.searchQuery)
       //               .build();
       this.body = {query: {multi_match: {fields: [ "ingredients", "name", "brand", "description"], query: this.currentSearchQuery}}};
-      console.log(this.body);
+      // console.log(this.body);
     }
     else if(this.currentSearchQuery === "" && this.selectedFilters.filtersSelected()) {
-      console.log('generateBody 3');
+      // console.log('generateBody 3');
       this.body = Bodybuilder()
                     .filter('terms', 'gender', this.selectedFilters.selectedFilters())
                     .query('match_all').build(); //Fix me!
-      console.log(this.body);
+      // console.log(this.body);
 
       //not filter
       this.invertedFiltersBody = Bodybuilder()
                     .notFilter('terms', 'gender', this.selectedFilters.selectedFilters())
                     .query('match_all').build(); //Fix me!
-      console.log(this.invertedFiltersBody);
+      // console.log(this.invertedFiltersBody);
       
     }
     else if(this.currentSearchQuery !== "" && this.selectedFilters.filtersSelected()) {
-      console.log('generateBody 4');
-      this.body = Bodybuilder()
-                    .filter('terms', 'gender', this.selectedFilters.selectedFilters())
-                    .query('match', this.searchOptions[this.selectedsearchOption], this.searchQuery)
-                    .build();
+      // console.log('generateBody 4');
+      // this.body = Bodybuilder()
+      //               .filter('terms', 'gender', this.selectedFilters.selectedFilters())
+      //               .query('match', this.searchOptions[this.selectedsearchOption], this.searchQuery)
+      //               .build();
 
-      console.log(this.body);      
+      this.body = {query: {bool: {must: {multi_match: {fields: [ "ingredients", "name", "brand", "description"], query: this.currentSearchQuery}}, filter: {terms: {gender: ['male']}}}}};
+
+      // console.log(this.body);      
 
       //not filter
-      this.invertedFiltersBody = Bodybuilder()
-                    .notFilter('terms', 'gender', this.selectedFilters.selectedFilters())
-                    .query('match', this.searchOptions[this.selectedsearchOption], this.searchQuery)
-                    .build();
-      console.log(this.invertedFiltersBody);      
+      // this.invertedFiltersBody = Bodybuilder()
+      //               .notFilter('terms', 'gender', this.selectedFilters.selectedFilters())
+      //               .query('match', this.searchOptions[this.selectedsearchOption], this.searchQuery)
+      //               .build();
+
+      this.invertedFiltersBody = {query: {bool: {must: {multi_match: {fields: [ "ingredients", "name", "brand", "description"], query: this.currentSearchQuery}}, filter: {bool: {must_not:{terms: {gender: ['male']}}}}}}};
+
+      // console.log(this.invertedFiltersBody);      
     }
   }
 
@@ -218,7 +235,7 @@ export class EsService {
 
   searchForSuggestions(searchQuery:string) {
     let body = {query: {multi_match: {fields: [ "ingredients", "name", "brand", "description"], query: searchQuery}}}
-
+    //apply filters here
     console.log(body);
     
     this.client.search({ 
@@ -226,7 +243,7 @@ export class EsService {
           type: this.type,
           body: body
         }).then((response) => {
-          console.log(response.hits.total);
+          // console.log(response.hits.total);
           this.searchResults.next(this.mapAllToProduct(response));
         }, error => {
             console.log(error);
@@ -253,18 +270,17 @@ export class EsService {
   }
 
   getProduct(id:string){
-    console.log(id);
     this.client.get({
       index: this.index,
       type: this.type,
       id: id
       }).then((response) => {
-          console.log(response);
+          // console.log(response);
           this.productDetails.next(this.mapToProduct(response));
         }, error => {
             console.log(error);
+            // handle found is false!
         });
-      //handle found is false!
     }
 
   mapToProduct(response){
