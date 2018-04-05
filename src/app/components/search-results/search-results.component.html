@@ -1,5 +1,9 @@
-<div *ngIf="filters && filters.length > 0">
-	<h5>Current Filters: {{ filters }}</h5>
+<div *ngIf="filters">
+	<h5>Current Filters:</h5>
+	<div *ngFor="let filter of filters">
+		<p>{{ objectKeys(filter) }}</p>
+		<p>{{ filter[objectKeys(filter)] }}</p>
+	</div>
 </div>
 <div *ngIf="searchQuery && searchQuery.length > 0">
 	<h5>Search Results For: {{ searchQuery }}</h5>

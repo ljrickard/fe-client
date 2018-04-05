@@ -12,13 +12,14 @@ export class Product {
   images:string[];
   score:number;
   skinType:string;
+  uniqueId:string;
 
   constructor(id:string, name:string, 
                 primaryImage:string, tagline:string,
                 gender:string[], ingredients:string[],
                 description:string, tags:string[],
                 images:string[], score:number, 
-                skinType:string){
+                skinType:string, uniqueId:string){
 
     this.id = id;
     this.name = name;
@@ -31,6 +32,7 @@ export class Product {
     this.images = images;
     this.score = score;
     this.skinType = skinType;
+    this.uniqueId = uniqueId;
   }
 
 }

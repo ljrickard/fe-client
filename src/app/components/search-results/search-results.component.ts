@@ -12,11 +12,12 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
   styleUrls: ['./search-results.component.css']
 })
 export class SearchResultsComponent implements OnInit {
-  filters:any[];
+  filters:any;
   showInvertedFilters = false;
   products:Product[]=[];
   productsInvertedFilters:Product[]=[];
   searchQuery:string='';
+  objectKeys = Object.keys;
 
   constructor(private esService:EsService, private spinnerService: Ng4LoadingSpinnerService) {}
 

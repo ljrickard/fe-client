@@ -21,12 +21,10 @@ export class Filter {
   }
 
   noFiltersSelected(){
-    console.log(Object.keys(this.selectedFilters()).length === 0);
     return Object.keys(this.selectedFilters()).length === 0;
   }
 
   filtersSelected(){
-    console.log(Object.keys(this.selectedFilters()).length != 0);
     return Object.keys(this.selectedFilters()).length != 0;
   }
 
