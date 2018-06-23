@@ -43,4 +43,4 @@ testem.log
 Thumbs.db
 
 #version file
-/environment/version
+/environments/version.js
