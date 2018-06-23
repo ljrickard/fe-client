@@ -4,3 +4,7 @@ img {
   max-height: 400px;
   height: auto;
 }
+
+.card {
+  background-color: red;
+}

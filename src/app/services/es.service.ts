@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class EsService {
@@ -44,7 +45,7 @@ export class EsService {
 
   constructor(private http:Http) { 
     this.client = new Client({
-      host: 'http://127.0.0.1:9200',
+      host: environment.esUrl,
       log: 'debug'
     });
 
@@ -209,6 +210,8 @@ export class EsService {
       this.body = {query: {bool: 
         {filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
 
+      console.log(this.body);
+
       this.invertedFiltersBody =  {query: {bool: 
         {filter: {bool: {must_not: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
     }
@@ -292,7 +295,7 @@ export class EsService {
                           response._source.ingredients,
                           response._source.description,
                           response._source.tags,
-                          response._source.images,
+                          response._source.s3_images,
                           parseFloat(response._score),
                           response._source.skin_type,
                           response._source.unique_id);
