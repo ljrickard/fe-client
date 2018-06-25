@@ -10,7 +10,7 @@ const gitInfo = gitDescribeSync({
 
 // gitInfo.version = version;
 
-const file = resolve(__dirname, '..', 'environments', 'version.js');
+const file = resolve(__dirname, '..', 'environments', 'version.ts');
 writeFileSync(file,
 `// IMPORTANT: THIS FILE IS AUTO GENERATED! DO NOT MANUALLY EDIT OR CHECKIN!
 /* tslint:disable */

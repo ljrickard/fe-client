@@ -5,6 +5,18 @@ img {
   height: auto;
 }
 
-.card {
+/*.card {
   background-color: red;
+}*/
+
+.carousel-control-next-icon {
+	background-color: red;
+}
+
+.carousel-control-prev-icon {
+	background-color: red;
+}
+
+.carousel-indicators {
+	background-color: red;	
 }

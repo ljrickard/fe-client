@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  esUrl: 'https://search-es-search-gggvvqdukkw2jlz3nyhulfsiyi.us-east-1.es.amazonaws.com/'
+  esUrl: 'https://search.builduser.com/'
 };
