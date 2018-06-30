@@ -121,7 +121,6 @@ export class EsService {
           // this.scrollId = response._scroll_id;
           this.searchFrom = this.getLastUniqueId(response);
           console.log(response);
-          console.log(this.searchFrom);
           this.mapAllToProduct(response).map(product => this.currentProducts.push(product));
           this.products.next(this.currentProducts);
 
@@ -198,15 +197,18 @@ export class EsService {
     this.invertedFiltersBody = ''
 
     if(this.currentSearchQuery === "" && this.selectedFilters.noFiltersSelected()) {
+      console.log('generateBody: 1');
       // this.body = {query: {match_all: {}}}
       this.body = {query: {match_all: {}}, sort: [{unique_id: 'asc'}]}
     }
 
     else if(this.currentSearchQuery !== "" && this.selectedFilters.noFiltersSelected()) {
+      console.log('generateBody: 2');
       this.body = {query: {multi_match: 
         {fields: this.searchOptions[this.selectedsearchOption], query: this.currentSearchQuery}}};
     }
     else if(this.currentSearchQuery === "" && this.selectedFilters.filtersSelected()) {
+      console.log('generateBody: 3');
       this.body = {query: {bool: 
         {filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
 
@@ -216,6 +218,7 @@ export class EsService {
         {filter: {bool: {must_not: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
     }
     else if(this.currentSearchQuery !== "" && this.selectedFilters.filtersSelected()) {
+      console.log('generateBody: 4');
       this.body = {query: {bool: {must: {multi_match: 
         {fields: this.searchOptions[this.selectedsearchOption], query: this.currentSearchQuery}}, 
         filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
@@ -229,7 +232,7 @@ export class EsService {
   convertFilterToEs(filter){
     let result=[];
     for(let something of Object.keys(filter)){
-      result.push({terms: {[something]: filter[something]}});
+      result.push({terms: {[something]: filter[something].map(function(x){ return x.toUpperCase() })}});
     }
     return result;
   }
