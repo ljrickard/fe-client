@@ -53,6 +53,10 @@ export class SearchResultsComponent implements OnInit {
     );
   }
 
+  appliedFilters() {
+    return Object.keys(this.filters);
+  }
+
   onScroll(){
     this.spinnerService.show();
     this.esService.scrolled();

@@ -1,8 +1,7 @@
 <div *ngIf="filters">
 	<h5>Current Filters:</h5>
-	<div *ngFor="let filter of filters">
-		<p>{{ objectKeys(filter) }}</p>
-		<p>{{ filter[objectKeys(filter)] }}</p>
+	<div *ngFor="let filter of appliedFilters()">
+		<p>{{ filter }} : {{ filters[filter] }}</p>
 	</div>
 </div>
 <div *ngIf="searchQuery && searchQuery.length > 0">
