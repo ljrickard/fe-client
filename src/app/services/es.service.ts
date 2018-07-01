@@ -64,7 +64,9 @@ export class EsService {
 
   publishProducts() {
     console.log('publishProducts');
+    this.searchFrom = ''
     this.generateBody();
+    console.log(this.body);
     this.continueSearch();
   }
 
@@ -136,6 +138,7 @@ export class EsService {
   }
 
   mapAllToProduct(response){
+    console.log(response);
     return response.hits.hits.map(
       hit => new Product(hit._id, hit._source.name, 
                           hit._source.s3_images[0], 
@@ -147,7 +150,8 @@ export class EsService {
                           hit._source.images,
                           parseFloat(hit._score),
                           hit._source.skin_type,
-                          hit._source.unique_id));
+                          hit._source.unique_id,
+                          hit._source.source_url));
   }
 
   generateBody(){
@@ -256,7 +260,8 @@ export class EsService {
                           response._source.s3_images,
                           parseFloat(response._score),
                           response._source.skin_type,
-                          response._source.unique_id);
+                          response._source.unique_id,
+                          response._source.source_url);
   }
 }
 

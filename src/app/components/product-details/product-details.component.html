@@ -28,6 +28,8 @@
 	    <div *ngFor="let ingredient of productDetails.ingredients">
 	    	<p class="card-text"><b>{{ objectKeys(ingredient) }}:</b> {{ ingredient[objectKeys(ingredient)] }}</p>
 	    </div>
+	    <br>
+	   	<a (click)="onNavigate()"><b>Source Url: </b><u>{{ productDetails.name }}</u></a>
 	</div>
 </div>
 

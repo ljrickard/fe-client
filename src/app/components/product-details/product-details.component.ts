@@ -17,10 +17,14 @@ export class ProductDetailsComponent implements OnInit {
   ngOnInit() {
 
     this.esService.productDetails$.subscribe(
-      productDetails => { this.productDetails = productDetails; });
+      productDetails => { this.productDetails = productDetails;});
 
     this.route.params.subscribe((params:Params) => { this.id = params.id; });
     this.esService.getProduct(this.id);
+  }
+
+  onNavigate() {
+    window.open(this.productDetails.sourceUrl, "_blank");
   }
 
 }
