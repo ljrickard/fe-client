@@ -3,20 +3,22 @@ img {
   max-width: 400px;
   max-height: 400px;
   height: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/*.card {
-  background-color: red;
-}*/
+.custom-style {
+  background-color: silver;
+}
 
 .carousel-control-next-icon {
-	background-color: red;
+	background: yellow;
 }
 
 .carousel-control-prev-icon {
-	background-color: red;
+	background-color: yellow;
 }
 
 .carousel-indicators {
-	background-color: red;	
+	background-color: yellow;
 }

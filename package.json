@@ -33,6 +33,7 @@
     "git-describe": "^4.0.2",
     "jquery": "^3.3.1",
     "ng4-loading-spinner": "^1.1.1",
+    "ngx-bootstrap": "^3.0.1",
     "ngx-infinite-scroll": "^0.8.3",
     "npm": "^5.10.0",
     "popper.js": "^1.12.9",

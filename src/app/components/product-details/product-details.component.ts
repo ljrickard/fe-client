@@ -12,6 +12,7 @@ export class ProductDetailsComponent implements OnInit {
   objectKeys = Object.keys;
   id:string
   productDetails:Product;
+  myInterval:number = -1;
 
   constructor(private route:ActivatedRoute, private router:Router, private esService:EsService) {}
   ngOnInit() {

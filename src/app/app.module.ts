@@ -6,6 +6,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HttpModule } from '@angular/http';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 import { AppComponent } from './app.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
@@ -60,7 +61,8 @@ const appRoutes: Routes = [
     AngularFontAwesomeModule,
     HttpModule, 
     InfiniteScrollModule,
-    Ng4LoadingSpinnerModule.forRoot()
+    Ng4LoadingSpinnerModule.forRoot(),
+    CarouselModule.forRoot(),
   ],
   providers: [
     EsService

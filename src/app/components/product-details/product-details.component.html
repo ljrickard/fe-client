@@ -1,24 +1,10 @@
 <div *ngIf="productDetails">
 	<div class="card mb-3">
-		<div *ngFor="let image of productDetails.images; let i = index; let f = first" id="carouselExampleIndicators" class="carousel slide mx-auto">
-			<ol class="carousel-indicators">
-				<li data-target="#carouselExampleIndicators" [attr.data-slide-to]="i" [class.active]="f"></li>
-				<!-- <li data-target="#carouselExampleIndicators" data-slide-to="1"></li> -->
-			</ol>
-			<div class="carousel-inner">
-				<div class="carousel-item" [attr.data-slide-to]="i" [class.active]="f">
-					<img class="card-img-top mx-auto" [src]="image">
-				</div>	
-			</div>
-			<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-				<span class="carousel-control-prev-icon"></span>
-				<span class="sr-only">Previous</span>
-			</a>
-			<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-				<span class="carousel-control-next-icon"></span>
-				<span class="sr-only">Next</span>
-			</a>
-		</div>
+	<carousel class="custom-style" [(activeSlide)]="activeSlideIndex"  [interval]="myInterval">
+	  <slide *ngFor="let slide of productDetails.images">
+	    <img [src]="slide">
+	  </slide>
+	</carousel>
 	  <div class="card-body">
 	    <h5 class="card-title">{{ productDetails.name }}</h5>
 	    <p class="card-text">{{ productDetails.tagline}}</p>
@@ -33,10 +19,6 @@
 	</div>
 </div>
 
-
-
-
-<!-- <img class="card-img-top rounded mx-auto" [src]="productDetails.primaryImage" alt="Card image cap"> -->
-
-
-<!-- <ol class="carousel-indicators" *ngIf="slides.length > 1"> <li [ERROR ->]*ngFor="#slidez of slides" [class.active]="slidez.active === true" (click)="select(slidez)"></li> -->
+<!-- TODO -->
+<!-- https://ngx-bootstrap.surge.sh/#/carousel -->
+<!-- Add alt image - no-image-found in assets -->
