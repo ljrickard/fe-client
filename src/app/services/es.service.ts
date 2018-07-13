@@ -12,35 +12,45 @@ import { environment } from '../../environments/environment';
 @Injectable()
 export class EsService {
   client:Client
+  selectedFilters:Filter = new Filter();
+
+  // constants
+  options:string[] = [ "ingredients", "name", "brand", "description"];
+  searchOptions:Object = { 'All': this.options, 'Ingredients': 'ingredients', 'Name': 'name', 'Brand': 'brand', 'Description': 'description' };
+  selectedSearchOption = 'All';
+  type:string = 'skincare';
+
+  productDetails = new Subject<Product>();
+  productDetails$ = this.productDetails.asObservable();
+  searchQuery = new Subject<string>();
+  searchQuery$ = this.searchQuery.asObservable();
+
+  // search params
   body:any
   index:string = 'products';
-  scrollTimeout:string = '60s';
-  size:number = 15; // todo: set back to 25 when working
-  type:string = 'skincare'; 
-  selectedFilters:Filter = new Filter();
-  options:string[] = [ "ingredients", "name", "brand", "description"]
-  searchOptions:Object = { 'All': this.options, 'Ingredients': 'ingredients', 'Name': 'name', 'Brand': 'brand', 'Description': 'description' };
-  selectedsearchOption = 'All';
-  scrollId:string;
-  scrollIdInverted:string;
+  size:number = 25; 
+  from:number = 0;
+
+  // inverted search params
+  invertedFrom:number = 0;
+  invertedFiltersBody:any;
+
+  // observables
   products = new Subject<Product[]>();
   products$ = this.products.asObservable();
   filters = new Subject<Filter>();
   filters$ = this.filters.asObservable();
   searchResults = new Subject<Product[]>();
   searchResults$ = this.searchResults.asObservable();
+
+  // inverted observables
   invertedFiltersResults = new Subject<Product[]>();
   invertedFiltersResults$ = this.invertedFiltersResults.asObservable();
-  productDetails = new Subject<Product>();
-  productDetails$ = this.productDetails.asObservable();
-  searchQuery = new Subject<string>();
-  searchQuery$ = this.searchQuery.asObservable();
+
   currentSearchQuery:string = '';
   currentProducts:Product[]=[];
   currentProductsInvertedFilters:Product[]=[];
-  invertedFiltersBody:any;
-  currentProductsLength:number = 0;
-  searchFrom:string = '';
+
 
   constructor(private http:Http) { 
     this.client = new Client({
@@ -54,61 +64,59 @@ export class EsService {
       }
     });
   }
-
   
   scrolled() {
     console.log('scrolled');
+    this.from = this.from + this.size;
     this.continueSearch();
   }
 
-
   publishProducts() {
     console.log('publishProducts');
-    this.searchFrom = ''
+    this.from = 0;
     this.generateBody();
     console.log(this.body);
     this.continueSearch();
   }
 
   continueSearch() {
-    this.body['search_after'] = [this.searchFrom];
-
     this.client.search({
       index: this.index,
+      from: this.from,
       size: this.size,
       type: this.type,
       body: this.body
     }).then((response) => {
-
-      this.searchFrom = this.getLastUniqueId(response);
       console.log(response.hits);
       this.mapAllToProduct(response).map(product => this.currentProducts.push(product));
       this.products.next(this.currentProducts);
 
       if(this.selectedFilters.filtersSelected()){
-        // this.publishInvertedFilters();
+        this.publishInvertedFilters();
       }
 
     }, error => {
-            console.log(error);
+            console.error(error);
         });
   }
 
-  getLastUniqueId(response) {
-    if(response.hits.hits.length > 0){
-      return response.hits.hits[response.hits.hits.length-1]._source.unique_id;
-    }
+  publishInvertedFilters() {
+    console.log('publishInvertedFilters');
+    this.invertedFrom = 0;
+    console.log(this.invertedFiltersBody);
+    this.continueInvertedSearch();
   }
 
-  publishInvertedFilters() {
-  this.currentProductsInvertedFilters = []
+  continueInvertedSearch() {
+    this.currentProductsInvertedFilters = []
     this.client.search({
           index: this.index,
-          scroll: this.scrollTimeout,
+          from: this.invertedFrom,
+          size: this.size,
           type: this.type,
           body: this.invertedFiltersBody
         }).then((response) => {
-          this.scrollIdInverted = response._scroll_id;
+          console.log(response.hits);
           this.mapAllToProduct(response).map(product => this.currentProductsInvertedFilters.push(product));
           this.invertedFiltersResults.next(this.currentProductsInvertedFilters);
     }, error => {
@@ -117,17 +125,10 @@ export class EsService {
   }
 
   scrolledInverted() { 
-    this.client.scroll({
-      scrollId: this.scrollIdInverted,
-      scroll: this.scrollTimeout,
-    }).then((response) => {
-          this.mapAllToProduct(response).map(product => this.currentProductsInvertedFilters.push(product));
-          this.invertedFiltersResults.next(this.currentProductsInvertedFilters);
-        }, error => {
-            console.log(error);
-        });
+    console.log("scrolledInverted");
+    this.invertedFrom = this.invertedFrom + this.size;
+    this.continueInvertedSearch();
   }
-
 
   publishFilters(){
     this.filters.next(this.selectedFilters);
@@ -138,7 +139,6 @@ export class EsService {
   }
 
   mapAllToProduct(response){
-    console.log(response);
     return response.hits.hits.map(
       hit => new Product(hit._id, hit._source.name, 
                           hit._source.s3_images[0], 
@@ -160,18 +160,18 @@ export class EsService {
 
     if(this.currentSearchQuery === "" && this.selectedFilters.noFiltersSelected()) {
       console.log('generateBody: 1');
-      this.body = {query: {match_all: {}}, search_after: [this.searchFrom], sort: [{unique_id: 'asc'}]}
+      this.body = {query: {match_all: {}}}
     }
 
     else if(this.currentSearchQuery !== "" && this.selectedFilters.noFiltersSelected()) {
       console.log('generateBody: 2');
       this.body = {query: {multi_match: 
-        {fields: this.searchOptions[this.selectedsearchOption], query: this.currentSearchQuery}}, search_after: [this.searchFrom], sort: [{unique_id: 'asc'}]};
+        {fields: this.searchOptions[this.selectedSearchOption], query: this.currentSearchQuery}}};
     }
     else if(this.currentSearchQuery === "" && this.selectedFilters.filtersSelected()) {
       console.log('generateBody: 3');
       this.body = {query: {bool: 
-        {filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}, search_after: [this.searchFrom], sort: [{unique_id: 'asc'}]};
+        {filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
 
       this.invertedFiltersBody =  {query: {bool: 
         {filter: {bool: {must_not: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
@@ -179,11 +179,11 @@ export class EsService {
     else if(this.currentSearchQuery !== "" && this.selectedFilters.filtersSelected()) {
       console.log('generateBody: 4');
       this.body = {query: {bool: {must: {multi_match: 
-        {fields: this.searchOptions[this.selectedsearchOption], query: this.currentSearchQuery}}, 
-        filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}, search_after: [this.searchFrom], sort: [{unique_id: 'asc'}]};
+        {fields: this.searchOptions[this.selectedSearchOption], query: this.currentSearchQuery}}, 
+        filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
 
       this.invertedFiltersBody = {query: {bool: {must: {multi_match: 
-        {fields: this.searchOptions[this.selectedsearchOption], query: this.currentSearchQuery}}, 
+        {fields: this.searchOptions[this.selectedSearchOption], query: this.currentSearchQuery}}, 
         filter: {bool: {must_not: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
     }
   }
@@ -200,21 +200,19 @@ export class EsService {
     return Object.keys(this.searchOptions);
   }
 
-  searchOption(selectedsearchOption:string) {
-    this.selectedsearchOption = selectedsearchOption;
+  searchOption(selectedSearchOption:string) {
+    this.selectedSearchOption = selectedSearchOption;
   }
 
   searchForSuggestions(searchQuery:string) {
-    // let body = {query: {multi_match: {fields: this.searchOptions[this.selectedsearchOption], query: searchQuery}}}
-
     this.client.search({ 
           index: this.index,
           type: this.type,
-          body: {query: {multi_match: {fields: this.searchOptions[this.selectedsearchOption], query: searchQuery}}}
+          body: {query: {multi_match: {fields: this.searchOptions[this.selectedSearchOption], query: searchQuery}}}
         }).then((response) => {
           this.searchResults.next(this.mapAllToProduct(response));
         }, error => {
-            console.log(error);
+            console.error(error);
         });
   }
 
@@ -242,10 +240,10 @@ export class EsService {
       index: this.index,
       type: this.type,
       id: id
-      }).then((response) => {
-          this.productDetails.next(this.mapToProduct(response));
-        }, error => {
-            console.log(error);
+      }).then((response) => { 
+          this.productDetails.next(this.mapToProduct(response)); 
+        }, error => { 
+          console.error(error); 
         });
     }
 
@@ -265,24 +263,6 @@ export class EsService {
   }
 }
 
-// curl - H 'Content-Type: application/json'
-// 'localhost:9200/get-together/event/_search' - d '{"query": {"bool": {"must": {"match": {"title": "hadoop"}},"filter": {"term": {"host": "andy"}}}}}'
-// curl -H 'Content-Type: application/json' 'localhost:9200/get-together/event/_search' -d '{"query": {"bool": {"must": {"match_all": {}},"filter": {"term": {"host": "andy"}}}}}'
-// curl -H 'Content-Type: application/json' 'localhost:9200/products/_search' -d '{"query": {"bool": {"must": {"match_all": {}},"filter": {"term": {"gender": "male"}}}}}'
-// curl -H 'Content-Type: application/json' 'localhost:9200/products/product/_search' -d '{"query": {"bool": {"must": {"match_all": {}},"filter": {"term": {"gender": "male"}}}}}'
-
-// sortBy:string = "unique_id:asc";
-// searchAfter:string = '';
-
-// +//   {
-// +//     "size": 10,
-// +//     "query": {
-// +//         "match_all" : {}
-// +//     }, "search_after": ["Kiehls-Ultra-Facial-Moisturizer-SPF-30"],
-// +//     "sort": [
-// +//         {"_id": "desc"}
-// +//     ]
-// +//   }
 
 
 
