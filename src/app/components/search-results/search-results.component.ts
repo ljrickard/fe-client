@@ -13,17 +13,18 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 })
 export class SearchResultsComponent implements OnInit {
   filters:any;
-  showInvertedFilters = false;
-  products:Product[]=[];
-  productsInvertedFilters:Product[]=[];
-  searchQuery:string='';
-  objectKeys = Object.keys;
+  products:Product[] = [];
+  productsInvertedFilters:Product[] = [];
+  searchQuery:string = '';
+  objectKeys:Object = Object.keys;
+  showInverted: boolean = false;
 
   constructor(private esService:EsService, private spinnerService: Ng4LoadingSpinnerService) {}
 
   ngOnInit() {
     this.spinnerService.show();
     this.esService.publishProducts();
+
     this.esService.products$.subscribe(
       products => {
           this.products = products; 
@@ -42,6 +43,12 @@ export class SearchResultsComponent implements OnInit {
       productsInvertedFilters => {
           this.productsInvertedFilters = productsInvertedFilters; 
           this.spinnerService.hide();
+      }
+    );
+
+    this.esService.showInverted$.subscribe(
+      showInverted => {
+        this.showInverted = showInverted;
       }
     );
 

@@ -31,6 +31,10 @@ export class EsService {
   size:number = 25; 
   from:number = 0;
 
+  // display inverted
+  showInverted = new Subject<boolean>();
+  showInverted$ = this.showInverted.asObservable();
+
   // inverted search params
   invertedFrom:number = 0;
   invertedFiltersBody:any;
@@ -66,16 +70,14 @@ export class EsService {
   }
   
   scrolled() {
-    console.log('scrolled');
     this.from = this.from + this.size;
     this.continueSearch();
   }
 
   publishProducts() {
-    console.log('publishProducts');
+    this.showInverted.next(false);
     this.from = 0;
     this.generateBody();
-    console.log(this.body);
     this.continueSearch();
   }
 
@@ -87,28 +89,31 @@ export class EsService {
       type: this.type,
       body: this.body
     }).then((response) => {
-      console.log(response.hits);
-      this.mapAllToProduct(response).map(product => this.currentProducts.push(product));
-      this.products.next(this.currentProducts);
 
-      if(this.selectedFilters.filtersSelected()){
+      if(this.selectedFilters.filtersSelected() && this.noReponses(response.hits)){
         this.publishInvertedFilters();
       }
+
+      this.mapAllToProduct(response).map(product => this.currentProducts.push(product));
+      this.products.next(this.currentProducts);
 
     }, error => {
             console.error(error);
         });
   }
 
+  noReponses(hits) {
+    return hits.hits.length==0;
+  }
+
   publishInvertedFilters() {
-    console.log('publishInvertedFilters');
     this.invertedFrom = 0;
-    console.log(this.invertedFiltersBody);
+    this.currentProductsInvertedFilters = [];
     this.continueInvertedSearch();
+    this.showInverted.next(true);
   }
 
   continueInvertedSearch() {
-    this.currentProductsInvertedFilters = []
     this.client.search({
           index: this.index,
           from: this.invertedFrom,
@@ -116,7 +121,6 @@ export class EsService {
           type: this.type,
           body: this.invertedFiltersBody
         }).then((response) => {
-          console.log(response.hits);
           this.mapAllToProduct(response).map(product => this.currentProductsInvertedFilters.push(product));
           this.invertedFiltersResults.next(this.currentProductsInvertedFilters);
     }, error => {
@@ -125,7 +129,6 @@ export class EsService {
   }
 
   scrolledInverted() { 
-    console.log("scrolledInverted");
     this.invertedFrom = this.invertedFrom + this.size;
     this.continueInvertedSearch();
   }
@@ -159,17 +162,14 @@ export class EsService {
     this.invertedFiltersBody = ''
 
     if(this.currentSearchQuery === "" && this.selectedFilters.noFiltersSelected()) {
-      console.log('generateBody: 1');
       this.body = {query: {match_all: {}}}
     }
 
     else if(this.currentSearchQuery !== "" && this.selectedFilters.noFiltersSelected()) {
-      console.log('generateBody: 2');
       this.body = {query: {multi_match: 
         {fields: this.searchOptions[this.selectedSearchOption], query: this.currentSearchQuery}}};
     }
     else if(this.currentSearchQuery === "" && this.selectedFilters.filtersSelected()) {
-      console.log('generateBody: 3');
       this.body = {query: {bool: 
         {filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
 
@@ -177,7 +177,6 @@ export class EsService {
         {filter: {bool: {must_not: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
     }
     else if(this.currentSearchQuery !== "" && this.selectedFilters.filtersSelected()) {
-      console.log('generateBody: 4');
       this.body = {query: {bool: {must: {multi_match: 
         {fields: this.searchOptions[this.selectedSearchOption], query: this.currentSearchQuery}}, 
         filter: {bool: {must: this.convertFilterToEs(this.selectedFilters.selectedFilters())}}}}};
