@@ -20,7 +20,6 @@ import { SearchBoxComponent } from './components/search-box/search-box.component
 import { MainComponent } from './components/main/main.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { LogoutComponent } from './components/logout/logout.component';
-import { FormatUrlPipe } from './pipes/format-urls.pipe';
 
 import { EsService } from './services/es.service';
 import { ProductSummaryComponent } from './components/product-summary/product-summary.component';
@@ -50,7 +49,6 @@ const appRoutes: Routes = [
     MainComponent,
     UserProfileComponent,
     LogoutComponent,
-    FormatUrlPipe,
     ProductSummaryComponent,
     ProductAbbreviatedComponent
   ],

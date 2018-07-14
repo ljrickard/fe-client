@@ -15,8 +15,8 @@ export class EsService {
   selectedFilters:Filter = new Filter();
 
   // constants
-  options:string[] = [ "ingredients", "name", "brand", "description"];
-  searchOptions:Object = { 'All': this.options, 'Ingredients': 'ingredients', 'Name': 'name', 'Brand': 'brand', 'Description': 'description' };
+  options:string[] = [ 'ingredients.name', 'ingredients.description', 'name', 'brand', 'description'];
+  searchOptions:Object = { 'All': this.options, 'Ingredients': 'ingredients.name', 'Name': 'name', 'Brand': 'brand', 'Description': 'description' };
   selectedSearchOption = 'All';
   type:string = 'skincare';
 
@@ -78,6 +78,7 @@ export class EsService {
     this.showInverted.next(false);
     this.from = 0;
     this.generateBody();
+    console.log(this.body);
     this.continueSearch();
   }
 
@@ -96,10 +97,9 @@ export class EsService {
 
       this.mapAllToProduct(response).map(product => this.currentProducts.push(product));
       this.products.next(this.currentProducts);
+      console.log(response);
 
-    }, error => {
-            console.error(error);
-        });
+    }, error => { console.error(error); });
   }
 
   noReponses(hits) {
@@ -143,7 +143,8 @@ export class EsService {
 
   mapAllToProduct(response){
     return response.hits.hits.map(
-      hit => new Product(hit._id, hit._source.name, 
+      hit => new Product(hit._id, hit._source.name,
+                          hit._source.brand, 
                           hit._source.s3_images[0], 
                           hit._source.tagline, 
                           hit._source.gender, 
@@ -164,10 +165,8 @@ export class EsService {
     if(this.currentSearchQuery === "" && this.selectedFilters.noFiltersSelected()) {
       this.body = {query: {match_all: {}}}
     }
-
     else if(this.currentSearchQuery !== "" && this.selectedFilters.noFiltersSelected()) {
-      this.body = {query: {multi_match: 
-        {fields: this.searchOptions[this.selectedSearchOption], query: this.currentSearchQuery}}};
+      this.body = {query: {multi_match: {fields: this.searchOptions[this.selectedSearchOption], query: this.currentSearchQuery}}};
     }
     else if(this.currentSearchQuery === "" && this.selectedFilters.filtersSelected()) {
       this.body = {query: {bool: 
@@ -247,7 +246,8 @@ export class EsService {
     }
 
   mapToProduct(response){
-    return new Product(response._id, response._source.name, 
+    return new Product(response._id, response._source.name,
+                          response._source.brand, 
                           response._source.s3_images[0], 
                           response._source.tagline, 
                           response._source.gender, 

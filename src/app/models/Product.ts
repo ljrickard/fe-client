@@ -15,7 +15,7 @@ export class Product {
   uniqueId:string;
   sourceUrl:string;
 
-  constructor(id:string, name:string, 
+  constructor(id:string, name:string, brand:string,
                 primaryImage:string, tagline:string,
                 gender:string[], ingredients:string[],
                 description:string, tags:string[],
@@ -26,6 +26,7 @@ export class Product {
     this.id = id;
     this.name = name;
     this.primaryImage = primaryImage;
+    this.brand = brand;
     this.tagline = tagline;
     this.gender = gender;
     this.ingredients = ingredients;

@@ -6,13 +6,12 @@
 	  </slide>
 	</carousel>
 	  <div class="card-body">
-	    <h5 class="card-title">{{ productDetails.name }}</h5>
+	    <h5 class="card-title">{{ productDetails.name }} <i>from</i> {{ productDetails.brand }}</h5>
 	    <p class="card-text">{{ productDetails.tagline}}</p>
 	    <p class="card-text">{{ productDetails.description}}</p>
-	    <p class="card-text">Gender: {{ productDetails.gender}}</p>
 	    <p class="card-text">Tags: {{ productDetails.tags}}</p>
 	    <div *ngFor="let ingredient of productDetails.ingredients">
-	    	<p class="card-text"><b>{{ objectKeys(ingredient) }}:</b> {{ ingredient[objectKeys(ingredient)] }}</p>
+	    	<p class="card-text"><b>{{ ingredient.name }}:</b> {{ ingredient.description }}</p>
 	    </div>
 	    <br>
 	   	<a (click)="onNavigate()"><b>Source Url: </b><u>{{ productDetails.name }}</u></a>
